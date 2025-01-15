@@ -31,84 +31,19 @@ manager = {
 }
 
 
-
-
 # #----------
 order_id = 10000 #order id
 orders = {} #dictionary to store orders
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 def calculate_order_price(product_id, quantity_purchased, customer_online):
    global products, order_id, orders
 
-
-
-
-
-
-
-
    product_price = products[product_id]['price']
    #we want to check if we have enough stock to sell
-
-
-
-
-
-
-
-
    order_price = product_price * quantity_purchased
 
 
-
-
-
-
-
-
    name = products[product_id]['name']
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
    #order date
    start = datetime.date(2024,1,1)
@@ -116,26 +51,9 @@ def calculate_order_price(product_id, quantity_purchased, customer_online):
    order_date = str(get_date(start, end))
    #print(f' order_date: {order_date}')  #DO NOT NEED THIS LINE OF CODE!!! :)
 
-
-
-
-
-
-
-
    #local dictionary to then store in bigger dictionary
    order_details = {}
    order_id += 1
-
-
-
-
-
-
-
-
-
-
 
 
    order_details['customer_id'] = customer_online
@@ -147,41 +65,11 @@ def calculate_order_price(product_id, quantity_purchased, customer_online):
 
 
 
-
-
-
-
-
    orders[order_id] = order_details
    #print(orders)
    #end update
 
-
-
-
-
-
-
-
    return order_price, order_date
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 def check_customer_online():
@@ -193,10 +81,6 @@ def check_customer_online():
            customer_online = cid # I am storing the id of customer online
        #now I put it in end of orders dictionary
    return customer_online
-
-
-
-
 
 
 
@@ -353,28 +237,13 @@ def display_inventory():
 
 
 
-
        name, price, stock =product_detail['name'], product_detail['price'], product_detail['stock']
        print(f'{product_id:d}\t{name:s}\t{price:.2f}\t\t{stock:d}\t{stock_status:s}') #need to hide stock for customer but display stock for manager
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
    return product_id
-
-
 
 
 
@@ -412,22 +281,6 @@ def manager_display_order():
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 def get_date(start_date, end_date):
   # start = datetime.date(2024,1,1)
   # end = datetime.date(2024,12,31)
@@ -453,24 +306,10 @@ def display_inventory():
 
 
 
-
-
-
-
    for product_id in products:
        product_detail = products[product_id]
                  
        quantity_available = check_quantity(product_id)
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -485,29 +324,11 @@ def display_inventory():
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
        name, price, stock =product_detail['name'], product_detail['price'], product_detail['stock']
        print(f'{product_id:d}\t{name:s}\t{price:.2f}\t\t{stock:d}\t{stock_status:s}') #need to hide stock for customer but display stock for manager
 
 
 
-
-
-
-
-
- 
  
 def edit_prices():
    global products, order_id, orders
@@ -515,20 +336,7 @@ def edit_prices():
  
 
 
-
-
-
-
-
-
-
    product_chosen = 0
-
-
-
-
-
-
 
 
    quit = False   #####################
@@ -549,14 +357,6 @@ def edit_prices():
 
 
 
-
-
-
-
-
-
-
-
        ids = {1:1001, 2:1002, 3:1003} #key:value pairs. I am stating the product_chosen:101
        product_id = ids[product_chosen] #dictionary[key] = value
        price = products[product_id]['price']
@@ -564,8 +364,6 @@ def edit_prices():
 
 
 
-
-     
        #printing current
        print(f'Current unit price for product {product_id:d} is {price:.2f} ')
      
@@ -585,24 +383,11 @@ def edit_prices():
        
 
 
-
-
-
-
-
-
-
-
 def reorder_inventory():
    global products, order_id, orders
  
  
    display_inventory()
-
-
-
-
-
 
 
 
@@ -621,19 +406,8 @@ def reorder_inventory():
 
 
 
-
-
-
-
-
        product_id = ids[product_chosen] #dictionary[key] = value
        stock = products[product_id]['stock']
-
-
-
-
-
-
 
 
        #showcasing current stock of that inventory
@@ -647,19 +421,7 @@ def reorder_inventory():
 
 
 
-
-
-
-
-
        print(f'Stock changed to {stock:d} for product id {product_id:d}')
-
-
-
-
-
-
-
 
 
 
@@ -669,41 +431,9 @@ def verify_customer():
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
    #customer_id, customer_password == 0
 
-
-
-
-
-
-
    customer_id = int(input('Enter ID >'))
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -713,44 +443,12 @@ def verify_customer():
  
 
 
-
-
-
-
-
-
    #change customer status to online: true
    customers[customer_id]['status'] = 'online'
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
    customer_password = input('Enter Password >')
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -761,8 +459,6 @@ def verify_customer():
 
 
    return customer_id
-
-
 
 
 
@@ -785,18 +481,6 @@ def verify_manager():
         manager_password = input('Enter Password>')
 
     return manager_id
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
