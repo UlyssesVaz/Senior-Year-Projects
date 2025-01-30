@@ -1,0 +1,177 @@
+/*// Ulysses Vazquez
+// 05/28/2024
+// CSE 121 
+// P2: DNArray Sequencing
+// TA: Maria
+
+Class Comment: 
+Program is used to aid in determinig the most probable nucleotide sequence in a DNA
+
+This is achieved by taking a series of DNA strands and sequncing it multiple times to
+ensure accuracy by tallying up the number of occurance of a nucleotide in a position. 
+We then utilize this to determine the probability of the nucleotide appearing in a 
+position. 
+
+Lastly we use these probabilities to create the most likely DNA sequence and present it.
+*/
+
+import java.util.*;
+
+public class Sequencing {
+
+    public static final char[] NUCLEOTIDES = {'A', 'C', 'G', 'T'};
+
+    public static void main(String[] args) {
+        String[] sequences = {"ACTGTG", "ACTGCC", "ATCGCT", "ACTGTG"};
+        int[][] counts = counts(sequences);
+        double[][] probs = probabilities(counts);
+
+        // Overall Results
+        String[] correctSequence = result(probs);
+        System.out.println(Arrays.toString(correctSequence));
+    }
+
+
+    //B: Given a char we determine its index in the NUCLEOTIDES array.
+    //   If char is not within the array we return -1
+    //P: char nucleotide: the char we are looking for in the NUCLEOTIDES array
+    //R: index of the Char found. -1 if not found.
+    public static int indexOfNucleotide(char nucleotide) {
+        int indexOfNucleotide = -1;
+
+        for (int i = 0; i < NUCLEOTIDES.length; i++){
+            if (NUCLEOTIDES[i] == nucleotide){
+                indexOfNucleotide = i;
+            }
+        }
+        return indexOfNucleotide;
+    }
+
+
+    //B: The counts method calculates the frequency of each nucleotide ('A', 'C', 'G', 'T')
+    //   at each position across across the provided DNA sequences.
+    //R: int[row][column]. The frequency of how many times the nucleotide (column)
+    //   appeared in the position (row) from the provided DNA sequence
+    //P: String[] sequences: This is the DNA sequences we utilize to count nucelotide frequency
+    public static int[][] counts(String[] sequences) {
+        // capture each box then count length (column size)   
+        // and then use to check for CharAt
+
+        // in the end we are going to want to nested for loop.
+        // get into arr then count the length via inner for loop
+        // also used to count nucleotide
+
+        // can we assume we have one or should we not use this???????????
+        // row is sequnece lenght. assuming we have  | column is nucleotide
+        int[][] countingNucleotides = new int[sequences[0].length()][NUCLEOTIDES.length];
+
+
+        // want to go into the gene to pull the charAt the try to see
+        // if it matches any other. place into index of char
+        for (int genes = 0; genes < sequences.length; genes++){
+            String gene = sequences[genes];
+            for (int position = 0; position < gene.length(); position++){
+                char nucleotide = sequences[genes].charAt(position);
+
+                // give nucleotide to indexOfNucleotide to then use int return to add
+                // +1 in that index
+                int indexOfNucleotide = indexOfNucleotide(nucleotide);
+
+                if (indexOfNucleotide != - 1){
+                    // go into the row via i. then then using index of +1 in 
+                    // the array
+                    countingNucleotides[position][indexOfNucleotide]++;                  
+                } 
+            }
+        }
+        return countingNucleotides;
+    }
+
+    //B: Utilizing the count of the nucelotide we determine the probability a nucelotide
+    //   will appear in a position
+    //R: double[row][column]. The probability of how many times the nucleotide (column)
+    //   appears in the position (row).
+    //P: int[row][column] counts: The frequency of how many times the nucleotide (column)
+    //   appeared in the position (row) from the provided DNA sequence
+    public static double[][] probabilities(int[][] counts) {
+        // row size needs to be the same row size as counts same with column size
+        double[][] probabilities = new double[counts.length][counts[0].length];
+        double rowCount = 0;
+
+        // Part A: sum counts. I am entering the counts arr
+        // each time I am done with a row I want to reset rowCount
+        for(int row = 0; row < counts.length; row++){
+            for(int column = 0; column < NUCLEOTIDES.length; column++){
+                rowCount += counts[row][column];
+                
+                //rowCount += counts[row][column];
+            }
+            // Part B: we then divide by the count of row and store it into probabilities
+            // we want to store it in the same row we are in
+            for(int column = 0; column < NUCLEOTIDES.length; column++){
+                // if the element isn't 0 we can divide. else don't
+                if(counts[row][column] > 0){
+                    // we want to change to double before we do division
+                    double avg = (counts[row][column] * 1.0) / rowCount;
+                    probabilities[row][column] = avg;
+                }
+            }
+            // we want to reset this otherwise it'll continue to add
+            rowCount = 0;
+        }
+        return probabilities;
+    }
+
+    //B: Utilizing the probability of the nucelotide we calculated
+    //   we create and return the most likely DNA sequence
+    //R: String[]: the dna sequence created by the most likely nucleotide in the 
+    //   position
+    //P: double[row][column] probs. The probability of how many times the nucleotide appears
+    //   in a given position
+    public static String[] result(double[][] probs) {
+        String[] dnaArray = new String[probs.length];
+        String tempDna = "";
+        double highestProbability = 0;
+
+        // using highest probabilities of each nucleotide in each position construct DNA[]
+        // if there is a tie concat the char then place it in the arr position
+
+        // do the same thing as in probs. go through first row (positions)
+        // then see which element is the highest if x>y x = y| include if == then put both
+        
+        for(int row = 0; row < probs.length; row++){
+            // Part A: finding what the highestProbability is
+            for(int column = 0; column < probs[0].length; column++){
+                //calling doubles must store as double
+                double nucleotideProb = probs[row][column];
+
+                //finding the highest probabilities for row/position
+                if (nucleotideProb > highestProbability){
+                    highestProbability = nucleotideProb;
+                }
+                // now we want to see which char has matching value
+                // we += to a string. this allows for multiple String to be together
+            }
+            
+            // Part B: finding what char is the highest prob and appending it
+            // the DNA sequence is a 1D array.
+            // the probs[][] we are checking is a 2D array
+            for(int column = 0; column < probs[0].length; column++){
+                // wanting to check if probs in arr == highestProbability
+                if(probs[row][column] == highestProbability){
+
+                    //appending a char to String to keep
+
+                    tempDna += (NUCLEOTIDES[column] + "");
+                    // use rows since row = position and dna Array based on 
+                    // position
+                    dnaArray[row] = tempDna;
+                }
+            }
+            //reset for next row/position
+            highestProbability = 0;
+            tempDna = ""; 
+        }
+        return dnaArray;
+    }
+}
