@@ -1,4 +1,6 @@
 #SQL query drills (data provided by teacher)
+# Contains Subqueries
+
 select * from kickstarter_part; 
 
 -- q1 what is the most popular category ? popularity is based on num of proj in each category 
@@ -206,5 +208,76 @@ on sub2.category=sub1.category
 order by probabilityOfSucc desc 
 
 ; 
+
+
+-- q1 show all supplier company names whose road bikes we need to reoder 
+
+-- we can use join and subquery 
+
+select distinct(CompanyName) 
+
+from product as p 
+
+inner join supplier as s 
+
+on s.SupplierNumber=p.SupplierNumber 
+
+where QuantityonHand <= ReorderLevel and ProductCategory="road"; 
+
+  
+
+-- subquery version; think of one table first then another later on  
+
+select companyName  
+
+from supplier 
+
+where SupplierNumber in (select distinct SupplierNumber 
+
+from product 
+
+where ProductCategory = "road" and (QuantityonHand<=ReorderLevel)); -- supplier numner in (supplierNumber whose road bikes should be reorder) 
+
+  
+
+# supplier number whose road bike should be reordered 
+
+select distinct SupplierNumber 
+
+from product 
+
+where ProductCategory = "road" and (QuantityonHand<=ReorderLevel); 
+
+  
+
+-- make a list of the product names that are more expensive than the avg selling prie of all products 
+
+-- order results table by product name 
+
+# I first need to know the avg selling price of all prod 
+
+select Avg(SellingPrice) 
+
+from product; 
+
+#then I can use it to see which products have selling price above it 
+
+-- A1 
+
+select ProductName, SellingPrice  
+
+from product 
+
+where SellingPrice > (select Avg(SellingPrice) 
+
+from product) 
+
+order by ProductName; 
+
+  
+
+  
+
+  
 
  
