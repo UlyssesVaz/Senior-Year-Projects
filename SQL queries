@@ -1,0 +1,210 @@
+#SQL query drills (data provided by teacher)
+select * from kickstarter_part; 
+
+-- q1 what is the most popular category ? popularity is based on num of proj in each category 
+
+select category 
+
+from kickstarter_part 
+
+group by category 
+
+order by count(distinct project_ID) desc 
+
+limit 1; 
+
+ 
+
+-- q2 how many proj are pet related? wild in proj name 
+
+select count(distinct project_ID) 
+
+from kickstarter_part 
+
+where project_name like "%pet%"; 
+
+ 
+
+-- q3 find countries where more than 300 proj are posted 
+
+select country 
+
+from kickstarter_part 
+
+group by country 
+
+having count(project_id) > 300 ; 
+
+ 
+
+-- q4 which category proj have the highest avg goal amount 
+
+select category 
+
+from kickstarter_part 
+
+group by category 
+
+order by avg(usd_goal_amt) desc 
+
+limit 1; 
+
+ 
+
+-- q5 among the successful proj which proj has the higehst amount of goal amount? all info 
+
+select * 
+
+from kickstarter_part 
+
+where state = "successful" 
+
+order by usd_goal_amt desc 
+
+limit 1; 
+
+ 
+
+-- q6 calc the diff between the avg goal amount and the avg pledged amount for projects in various states (fail/successful) 
+
+select state, (avg(usd_goal_amt) - avg(usd_pledged_amt) ) 
+
+from kickstarter_part 
+
+group by state; 
+
+ 
+
+-- q8 get the num of proj in each state 
+
+select state, count(distinct project_ID) 
+
+from kickstarter_part 
+
+group by state; 
+
+ 
+
+-- q9 what is the avg goal amt of success, cancel, fail projects. order the results by av goal in a desc amt 
+
+select state, avg(usd_goal_amt) 
+
+from kickstarter_part 
+
+group by state 
+
+order by avg(usd_goal_amt) desc; 
+
+ 
+
+-- q10 get all the info of the proj of which the avg pledge amt per backer is the greatest 
+
+-- in your result show the avg pleader amount per backer 
+
+select *, ( usd_pledged_amt / backers ) as avgPledgePerBacker 
+
+from kickstarter_part 
+
+order by ( usd_pledged_amt / backers ) desc; 
+
+ 
+
+-- q11 for each category, get the num of successful proj. sort the list by the num of successful COUNTS in desc 
+
+select category, count(distinct project_ID) 
+
+from kickstarter_part 
+
+where state = "successful" 
+
+group by category 
+
+order by count(distinct project_ID) desc 
+
+; 
+
+ 
+
+-- q12 what is the probability of successful (succ/total) for projects in technology category 
+
+-- two tables. one of count for succsseful; one for all total 
+
+select count(distinct project_ID) as totalProj 
+
+from kickstarter_part 
+
+where category = "technology"; 
+
+ 
+
+select count(distinct project_ID) as SuccProj 
+
+from kickstarter_part 
+
+where category = "technology" and state = "successful" 
+
+; 
+
+ 
+
+select (SuccProj / totalProj) as probabilityOfSucc 
+
+from (select count(distinct project_ID) as SuccProj 
+
+from kickstarter_part 
+
+where category = "technology" and state = "successful") as sub1, (select count(distinct project_ID) as totalProj 
+
+from kickstarter_part 
+
+where category = "technology") as sub2; 
+
+ 
+
+-- q13 for each category get the prob of succ sort the probability in desc order  
+
+select count(distinct project_ID) as totalProj 
+
+from kickstarter_part; 
+
+ 
+
+select category, count(distinct project_ID) as totalProj 
+
+from kickstarter_part 
+
+where state = "successful" 
+
+group by category; 
+
+-- I want to be able to piece by ca 
+
+ 
+
+select sub1.category, ((SuccProj / totalProj) * 100 ) as probabilityOfSucc 
+
+from  
+
+(select category, count(distinct project_ID) as SuccProj 
+
+from kickstarter_part 
+
+where state = "successful" 
+
+group by category) as sub1 
+
+inner join  
+
+(select category, count(distinct project_ID) as totalProj 
+
+from kickstarter_part 
+
+group by category) as sub2 
+
+on sub2.category=sub1.category  
+
+order by probabilityOfSucc desc 
+
+; 
+
+ 
