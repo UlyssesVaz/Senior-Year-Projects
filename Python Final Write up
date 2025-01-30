@@ -1,1 +1,32 @@
+IS-Shopping-App
+Group Project for IS 320 – UW Foster
 
+Overview
+IS-Shopping-App is a Python-based shopping system that enables customers to browse products, place orders, and track purchase history. Managers can monitor orders, adjust pricing, and manage inventory to optimize business operations.
+
+Key Features
+For Customers:
+
+Login/Logout authentication
+Product browsing and ordering
+Order history tracking
+For Managers:
+
+Secure login access
+View and manage all customer orders
+Update product prices and inventory
+Business Benefits
+For Customers: Streamlined shopping experience with real-time order tracking.
+For Managers: Improved inventory control, pricing flexibility, and order management efficiency.
+Technical Architecture
+Data Storage: Utilizes Python dictionaries to manage users, products, and orders.
+Order Management: Tracks transactions with unique order IDs and timestamps.
+Inventory & Pricing Control: Allows managers to adjust stock levels and product prices.
+Future Enhancements
+User registration for new customers
+Advanced reporting for sales insights
+Improved UI/UX through a graphical interface
+Lessons Learned
+Technical: Strengthened Python skills, object-oriented programming, and data management.
+Business: Gained insights into inventory control, pricing strategies, and user experience design.
+Personal: Developed problem-solving, project management, and cross-functional thinking skills
