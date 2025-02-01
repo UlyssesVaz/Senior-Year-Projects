@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "../Downloads/UW/2024 Spring/IS 320"
+		},
+		{
+			"path": "../Downloads/technology/Continued advancment"
+		}
+	],
+	"settings": {
+		"java.format.settings.url": "eclipse-formatter.xml",
+		"java.debug.settings.onBuildFailureProceed": true
+	}
+}
