@@ -1,0 +1,138 @@
+
+
+
+
+
+
+
+---
+install.packages("ISLR")
+library(ISLR)
+data(College)
+summary(College)
+College$Private <- ifelse(College$Private == "Yes", 1, 0)
+# enroll / app = how many total applicants actually became students
+#College$Enroll_Ratio <- College$Enroll / College$Apps
+#College$TotalStudents <- College$F.Undergrad + College$P.Undergrad
+College$Faculty <- College$PhD + College$Terminal
+# Remove row 42 from the dataset
+College <- College[-48, ]
+
+
+
+set.seed(42)  # Ensures reproducibility
+# Create an index for the training set (80% of the data)
+train_index <- sample(1:nrow(College), size = 0.8 * nrow(College))
+
+# Split the data
+train_data <- College[train_index, ]  # 80% for training
+valid_data <- College[-train_index, ] # 20% for validation
+
+# Check the sizes
+nrow(train_data)  # Should be ~80% of the dataset
+nrow(valid_data)  # Should be ~20% of the dataset
+
+# Fit the model using selected variables
+lm_model <- lm(Outstate ~ Private +  Top10perc + Room.Board + 
+  Faculty + Grad.Rate + S.F.Ratio, data = train_data)
+
+options(scipen = 999)  # Disable scientific notation
+summary(lm_model)       # Run the summary again
+
+
+
+#multicollinearity
+install.packages("car")
+library(car)
+vif(lm_model)
+
+#residuals
+plot(lm_model)
+
+
+#validating training
+# validation test
+predictions <- predict(lm_model, newdata = valid_data)
+
+# Calculate Residuals (errors)
+residuals <- valid_data$Outstate - predictions
+# Calculate MAE
+mae <- mean(abs(residuals))
+# Calculate MSE
+mse <- mean(residuals^2)
+# Calculate RMSE
+rmse <- sqrt(mse)
+mae
+mse
+rmse
+
+mae_percentage <- mae / mean(valid_data$Outstate) * 100
+mse_percentage <- mse / mean(valid_data$Outstate^2) * 100
+rmse_percentage <- rmse / mean(valid_data$Outstate) * 100
+
+# Print percentage-based error metrics
+print(paste("MAE Percentage: ", round(mae_percentage, 2), "%"))
+print(paste("MSE Percentage: ", round(mse_percentage, 2), "%"))
+print(paste("RMSE Percentage: ", round(rmse_percentage, 2), "%"))
+
+
+# Calculate R-squared for validation data
+ss_total <- sum((valid_data$Outstate - mean(valid_data$Outstate))^2)
+ss_residual <- sum(residuals^2)
+r_squared <- 1 - (ss_residual / ss_total)
+r_squared
+
+#plot act v predicted
+plot(valid_data$Outstate, predictions, main = "Actual vs Predicted", xlab = "Actual", ylab = "Predicted")
+abline(0, 1, col = "red")  # Adds a reference line (y = x) for perfect prediction
+
+print(plot)
+
+# Create a data frame to store the actual, predicted, and residual values
+result_table <- data.frame(
+  Actual = valid_data$Outstate,
+  Predicted = predictions,
+  Residual = residuals  # Residuals were calculated earlier as valid_data$Outstate - predictions
+)
+
+# View the first few rows of the result table
+head(result_table)
+
+# View the table
+print(result_table)
+
+
+# Plot the residuals to detect any outliers
+plot(result_table$Residual, main = "Residuals", xlab = "Index", ylab = "Residuals")
+abline(h = 0, col = "red")  # Adds a reference line at 0 to highlight deviations
+
+
+residuals <- valid_data$Outstate - predictions
+boxplot(residuals, main = "Boxplot of Residuals", ylab = "Residuals", col = "lightblue")
+# Identify outliers
+outliers <- residuals[residuals < quantile(residuals, 0.25) - 1.5 * IQR(residuals) | residuals > quantile(residuals, 0.75) + 1.5 * IQR(residuals)]
+
+# Plot the boxplot again
+boxplot(residuals, main = "Boxplot of Residuals", ylab = "Residuals", col = "lightblue")
+
+# Highlight the outliers
+points(rep(1, length(outliers)), outliers, col = "red", pch = 19)
+which(residuals %in% outliers)
+
+outlier_data <- valid_data[c(10, 17, 51, 73, 92, 109, 120), ]
+print(outlier_data)
+
+
+
+# Subset the outlier rows
+outlier_data <- valid_data[c(10, 17, 51, 73, 92, 109, 120), ]
+
+# View the data for the outliers
+print(outlier_data)
+
+# Visualizing the distribution of some key features for the outliers
+par(mfrow=c(2, 2))  # Set up a 2x2 plot layout
+boxplot(valid_data$Outstate ~ valid_data$Top10perc, main = "Outstate vs Top10perc", xlab = "Top10perc", ylab = "Outstate")
+boxplot(valid_data$Room.Board ~ valid_data$Enroll, main = "Room and Board vs Enrollment", xlab = "Enrollment", ylab = "Room and Board")
+boxplot(valid_data$Books ~ valid_data$Private, main = "Books vs Private", xlab = "Private", ylab = "Books")
+
