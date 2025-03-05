@@ -1,0 +1,295 @@
+Executive Summary: Key Insights & Recommendations
+Key Insights:
+Sales Drivers: The analysis reveals Sales are driven by foot traffic, with each additional 1,000 customers generating $130, though deeper analysis is needed to understand spending patterns per visit. Anniversary sales add $6,486 in revenue, while a 1% rise in competitor prices reduces sales by $23.42. With the model explaining only 37% of sales variability, identifying key purchasing behaviors and product-level drivers is crucial for deeper insights.
+Social Media Influence: The model predicts whether a store is featured on TikTok with moderate confidence, accurately identifying key factors like proximity to colleges, online orders, and marketing spend. However, it still misses some stores that should be featured, indicating that the current model doesn't fully capture all the factors influencing TikTok features.
+Seasonal Trends: Overall sales are increasing, with projections suggesting continued growth in 2024 with a peak in April and a dip in september. Further analysis is needed to identify the causes of these seasonal fluctuations and whether growth is driven by increased sales per store or the addition of new stores.
+College Proximity: Stores near college campuses tend to have higher foot traffic and a greater likelihood of running anniversary sales, but the data suggests that students may not be the primary drivers of sales, as seasonal peaks don't align with the academic calendar. The current model's accuracy in predicting store proximity to colleges is limited, making it difficult to definitively assess the impact of student customers on sales
+Non-Findings:
+Retired Population Impact: Contrary to initial assumptions, the local retired population does not have a significant impact on store sales. This could suggests the that we are missing to properly market to this demographic or that there isn't a great deal of them nearby.
+Online Orders & Foot Traffic: Although online orders do not directly contribute to sales, they can drive foot traffic to physical stores. This indirect influence should be further explored in future strategies.
+Critical Data Gaps:
+The dataset provides a strong foundation, but it lacks key variables that could offer deeper insights into sales performance, such as seasonal trends, specific customer behaviors, and the effects of nearby college campuses. While foot traffic is a clear indicator of sales potential, the dataset doesn't yet reveal the factors that drive spending per visit or the impact of social media promotions like TikTok. Additionally, proximity to colleges doesn't always lead to higher sales, suggesting there are other underlying factors at play. To improve accuracy and generate reliable business insights for driving sales growth, expanding the dataset with more detailed customer behavior and additional sales drivers will be crucial.
+
+
+1. Understanding the Data & Transformations
+Overall, the dataset consists of 3,000 entries, spanning approximately 2.5 years from January 1, 2022, to June 1, 2024 and are recorded the first of each month (there is no indication if these are from prior month or current). There are currently 100 unique stores, and for each store, we observe monthly sales figures ranging from 13,770 to 45,572. The median daily sales across these stores is 24,513, representing the typical sales figure in the dataset.
+
+To ensure the data was suitable for analysis, several transformations were applied:
+Date Conversion: Converted to a proper Date type for easier handling.
+Sales: Converted from a character column (removing commas) to numeric
+Manager Education: Converted to a factor to represent categorical levels (High School, Undergraduate, Masters, PhD).
+TikTok: converted into a binary factor, indicating if it was featured(1) or not(0).
+Competitor Price Index: log-transformation was applied to help capture meaningful percentage changes in pricing, especially since the values were between 0.8 and 1.2, making the changes more interpretable in a logistic regression model.
+Campus Distance: Converted to a binary variable (Not Close to College: 0 miles; Close to college ≥ 0 and ≤ 5 miles). This threshold was chosen because:
+A 5-mile radius is a reasonable distance for students to travel, while 0 miles indicates no college proximity. This may capture a shift from student driven to general consumer patterns
+
+Additional observations:
+Online Orders do not directly correlate with sales but it may drive foot traffic and ultimately sales. Future analysis could distinguish between shipped orders and in-store pickups to better understand this relationship.
+
+Lastly, the median transaction count is 274 with the median customer entry count is 386, suggesting that around 70% of customers make at least one transaction, while the remaining 30% may either not make a purchase or may be accompanying someone.
+
+2. Predicting Sales
+The regional manager hypothesized that the retired local population and online orders are the best predictors of sales. However, our analysis revealed (Appx. 1)
+Online Orders: Do not directly contribute to sales, as per the data definition. Since we are unable to determine if they affect foot traffic no further steps were taken to exclude them from the Customers Entered variable.
+Retired Population: This predictor indicates no high impact on sales due to the high p-value (0.55) from the model.
+Key Predictors:
+Customers Entered: Each additional thousand customers generated approximately $130 in sales. The median monthly foot traffic is 386 customers, with a maximum of 695, driving an estimated sales of $50.18, or $351.26 for a typical month per store.
+Further analysis is needed to understand the average sale per transaction, which could reveal spending patterns per visit and identify key items that drive higher purchases.
+Anniversary Sale: Having an anniversary sale correlated to an additional $6,486 in sales.
+Competitor Price Index: A significant predictor, as increasing price by 1% (from 1.00 to 1.01), Sales would decrease by approximately $23.42. (Appx. 2)
+
+Currently, the model shows reasonable accuracy with low error rates when validating (MAE: 12.53%, RMSE: 15.44%), but its low R-squared value suggests it only explains 37% of the variability in sales. This indicates that key drivers of sales are missing from the model, limiting its ability to fully capture the factors influencing revenue.
+
+
+3. Social Media Prediction
+We explored predicting stores featured on TikTok using a logistic regression, finding that the model accurately predicts TikTok status 73.67% of the time with variables such as proximity to a college, online orders, and marketing spend being key predictors if a store were to be featured on TikTok. These were chosen as a proxy for having a strong digital presence which could increase the likelihood of someone using TikTok and posting about the store.
+
+However, the dataset is imbalanced, with 25% of the stores actually being featured on TikTok. This means the model’s accuracy is partly driven by its ability to predict the majority class (TikTok = 0), making precision and recall more informative metrics.
+Precision (90.4%): When the model predicts a store is on TikTok, it is correct 90.4% of the time, indicating high reliability for positive predictions.
+Recall (73.5%): The model correctly identifies 73.5% of the stores that are actually on TikTok, but it misses 26.5% of these stores, meaning opportunities for engagement are being overlooked.
+Despite the promising precision, the current model is not fully capturing the factors that influence whether a store will appear on TikTok. At this stage, it would be challenging to predict with confidence what specifically causes a store to be featured on TikTok or when it might happen.
+
+
+4. Time Analysis: Trends and Sales Projections:
+The time series analysis revealed:
+Seasonal Patterns: Sales peak in April and dip in September, which does not align with the academic calendar (Appx 3). This suggests that college students may not be the primary drivers of sales. This relationship will be further explored in analysis 5.
+Upward Trend: Overall sales are increasing, with projections indicating continued growth in 2024. Further analysis is needed to determine whether this growth stems from increased sales per store or the addition of new stores.
+Forecast: The model predicts recurring dips in September, highlighting an opportunity to investigate the underlying causes. Potential factors include dips in marketing efforts, promotional activity, or other predictors not captured in the current dataset. Understanding these trends can inform strategies to achieve more linear growth.
+
+ 
+
+5. Categorizing Stores Based on College Proximity:
+Stores were classified into two groups based on their proximity to colleges:
+Close to College (≤5 miles): 1,290 stores.
+Not Close to College (≥ 5 miles or 0 miles): 1,710 stores.
+This means approximately 43% of stores are located near a college campus.
+Running a CART model revealed that stores close to college campuses exhibit higher foot traffic and a greater likelihood of running an anniversary sale, suggesting potential engagement benefits. However, time series analysis shows sales peak in April and dip in September, not aligning with the academic calendar, challenging the assumption that students are the primary drivers of sales.
+While proximity to colleges may increase foot traffic, it doesn’t necessarily translate to higher sales from students. This could be because students aren’t shopping there as frequently, or there may be other factors influencing sales.
+The model’s accuracy in predicting college proximity is limited, with only 60% overall accuracy. This leaves uncertainty around the true impact of student customers on sales. Ultimately, the current model doesn’t provide enough insight to determine the percentage of student customers or whether college proximity meaningfully influences sales.
+
+
+Limitations & Conclusion:
+One of the larger issues with the dataset is its lack of diversity in key variables, such as proximity to colleges, seasonal trends, and customer behavior, which limits the ability of the models to truly capture meaningful patterns. For example, the model couldn't reliably predict the impact of students on store sales, even though proximity to campuses was expected to be a major factor. Similarly, while our exploration of stores featured on TikTok provided some insight, the imbalanced dataset and unclear drivers of social media visibility made it difficult to definitively predict what causes stores to be featured.
+
+Overall, while the dataset serves as a strong starting point, it lacks the richness and variety needed to create high-quality models that can provide more actionable business insights. Further exploration, along with enhanced predictors and more diverse data, will be essential to improve model accuracy and enable deeper, more reliable insights that can drive strategic business decisions.
+
+
+Appendix
+
+Predicting Sales
+Appx 1
+
+Appx 2
+
+
+Time Series
+Sale trends over the months
+
+
+
+
+
+
+
+
+Code
+# Load necessary libraries
+library(dplyr)
+library(caret)
+library(forecast)
+library(ggplot2)
+library(rpart)
+library(rpart.plot)
+library(ggfortify)
+library(tidyverse)
+
+# Set first row as column names and remove the first row
+colnames(Project_Data_Set) <- Project_Data_Set[1, ]
+Project_Data_Set <- Project_Data_Set[-1, ]
+
+clean_data <- function(data) {
+  # Check if required columns exist
+  required_columns <- c("Customer_Retired", "Demo_Retired", "Product_Category_Focus", 
+                        "Date", "Sales", "Manager_Education", "Competitor_Price_Index", "TikTok")
+  if (!all(required_columns %in% colnames(data))) {
+    stop("Missing required columns in the dataset.")
+  }
+  
+  # Convert all columns to appropriate types
+  data <- data %>%
+    mutate(across(everything(), ~ type.convert(as.character(.), as.is = TRUE)))
+  
+  # Apply transformations with error handling
+  data <- data %>%
+    mutate(
+      Customer_Retired = as.numeric(gsub("%", "", Customer_Retired)) / 100,
+      Demo_Retired = as.numeric(gsub("%", "", Demo_Retired)) / 100,
+      Product_Category_Focus = as.factor(Product_Category_Focus),
+      Date = as.Date(Date, format = "%m/%d/%y"),
+      Sales = as.numeric(gsub(",", "", Sales)),
+      Manager_Education = factor(Manager_Education, 
+                                 levels = c(0, 1, 2, 3), 
+                                 labels = c("High School", "Undergraduate", "Masters", "PhD"), 
+                                 ordered = TRUE),
+      log_Competitor_Price_Index = ifelse(is.na(Competitor_Price_Index), NA, log(Competitor_Price_Index)),
+      TikTok = factor(TikTok, levels = c(0, 1))
+    )
+  
+  return(data)
+}
+# Apply data cleaning
+Project_Data_Set <- clean_data(Project_Data_Set)
+
+# Create College_Proximity_Binary column
+Project_Data_Set$College_Proximity_Binary <- ifelse(
+  Project_Data_Set$Campus_Distance_MILES > 0 & Project_Data_Set$Campus_Distance_MILES <= 5, 1, 0
+)
+
+
+
+# Split Data Function
+split_data <- function(data, split_ratio = 0.8) {
+  set.seed(123)
+  train_indices <- sample(1:nrow(data), size = split_ratio * nrow(data))
+  list(train = data[train_indices, ], test = data[-train_indices, ])
+}
+
+# Split data
+data_split <- split_data(Project_Data_Set)
+train_data <- data_split$train
+test_data <- data_split$test
+
+# 1. Sales Analysis
+sales_model <- lm(Sales ~ Customers_Entered + College_Proximity_Binary + 
+                    Customer_Retired + log_Competitor_Price_Index + Manager_Experience +
+                    Anniversary_Sale, data = train_data)
+summary(sales_model)
+
+# Multicollinearity check
+library(car)
+vif(sales_model)
+
+# Validate the model
+predictions <- predict(sales_model, newdata = test_data)
+residuals <- test_data$Sales - predictions
+
+mae <- mean(abs(residuals))
+mse <- mean(residuals^2)
+rmse <- sqrt(mse)
+
+mae_percentage <- mae / mean(test_data$Sales) * 100
+mse_percentage <- mse / mean(test_data$Sales^2) * 100
+rmse_percentage <- rmse / mean(test_data$Sales) * 100
+
+print(paste("MAE Percentage:", round(mae_percentage, 2), "%"))
+print(paste("MSE Percentage:", round(mse_percentage, 2), "%"))
+print(paste("RMSE Percentage:", round(rmse_percentage, 2), "%"))
+
+ss_total <- sum((test_data$Sales - mean(test_data$Sales))^2)
+ss_residual <- sum(residuals^2)
+r_squared <- 1 - (ss_residual / ss_total)
+print(paste("R-squared:", r_squared))
+
+plot(test_data$Sales, predictions, main = "Actual vs Predicted Sales", xlab = "Actual Sales", ylab = "Predicted Sales")
+abline(0, 1, col = "red")
+
+
+
+
+# 2. Social Media Prediction
+log_model <- glm(TikTok ~ College_Proximity_Binary + Manager_Education + Anniversary_Sale +
+                   Online_Orders + Marketing + Employees, data = train_data, family = "binomial")
+log_preds <- predict(log_model, test_data, type = "response")
+log_class_preds <- ifelse(log_preds > 0.3, 1, 0)
+confusionMatrix(as.factor(log_class_preds), test_data$TikTok)
+
+
+
+
+# 3. Time Series Analysis
+Project_Data_Set$YearMonth <- format(Project_Data_Set$Date, "%Y-%m")
+monthly_sales <- Project_Data_Set %>%
+  group_by(YearMonth) %>%
+  summarise(Sales = sum(Sales))
+
+monthly_sales_ts <- ts(monthly_sales$Sales, start = c(2020, 1), frequency = 12)
+autoplot(monthly_sales_ts) + labs(title = "Monthly Sales Trend", x = "Year", y = "Sales")
+
+decomposed <- decompose(monthly_sales_ts, type = "multiplicative")
+autoplot(decomposed)
+
+fit <- auto.arima(monthly_sales_ts)
+forecast_data <- forecast(fit, h = 12)
+autoplot(forecast_data) + labs(title = "Sales Forecast (Next 12 Months)", x = "Year", y = "Sales")
+
+accuracy_results <- accuracy(fit)
+print(accuracy_results)
+
+
+
+
+
+
+
+#4. Classification: College Proximity
+# Build the CART model
+cart_model <- rpart(
+  College_Proximity_Binary ~ Customers_Entered + Customer_Retired + 
+    Sales + Online_Orders + Competitor_Price_Index + 
+    Marketing + Employees + Product_Category_Focus + Anniversary_Sale,
+  data = train_data, 
+  method = "class"
+)
+
+# Prune the tree if necessary
+if (length(cart_model$cptable) > 0) {
+  optimal_cp <- cart_model$cptable[which.min(cart_model$cptable[, "xerror"]), "CP"]
+  pruned_model <- prune(cart_model, cp = optimal_cp)
+} else {
+  pruned_model <- cart_model  # No pruning if no complexity table
+}
+
+# Visualize the pruned tree
+rpart.plot(pruned_model, type = 4, extra = 104, box.palette = "auto", 
+           main = "Pruned CART Model: Classifying Stores Based on College Proximity",
+           cex = 0.5)  # Adjust this value (try 0.4, 0.3, etc.)
+
+
+# Make predictions
+predictions <- predict(pruned_model, test_data, type = "class")
+
+# Ensure predictions and actual values are factors with correct levels
+predictions <- factor(predictions, levels = c(0, 1))
+test_data$College_Proximity_Binary <- factor(test_data$College_Proximity_Binary, levels = c(0, 1))
+
+# Create confusion matrix
+conf_matrix <- table(Predicted = predictions, Actual = test_data$College_Proximity_Binary)
+print(conf_matrix)
+
+# Calculate accuracy
+accuracy <- sum(diag(conf_matrix)) / sum(conf_matrix)
+print(paste("Accuracy:", round(accuracy, 3)))
+
+# Calculate precision and recall safely
+true_positives <- ifelse("1" %in% rownames(conf_matrix) & "1" %in% colnames(conf_matrix), conf_matrix["1", "1"], 0)
+false_positives <- ifelse("1" %in% rownames(conf_matrix) & "0" %in% colnames(conf_matrix), conf_matrix["1", "0"], 0)
+false_negatives <- ifelse("0" %in% rownames(conf_matrix) & "1" %in% colnames(conf_matrix), conf_matrix["0", "1"], 0)
+
+precision <- ifelse((true_positives + false_positives) > 0, true_positives / (true_positives + false_positives), NA)
+recall <- ifelse((true_positives + false_negatives) > 0, true_positives / (true_positives + false_negatives), NA)
+
+print(paste("Precision:", ifelse(is.na(precision), "Undefined", round(precision, 3))))
+print(paste("Recall:", ifelse(is.na(recall), "Undefined", round(recall, 3))))
+
+
+# general
+
+min_date <- min(Project_Data_Set$Date, na.rm = TRUE)
+max_date <- max(Project_Data_Set$Date, na.rm = TRUE)
+
+print(min_date)
+print(max_date)
+summary(Project_Data_Set)
+
+
+
